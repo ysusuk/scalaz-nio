@@ -72,12 +72,10 @@ class AsynchronousByteChannel(private val channel: JAsynchronousByteChannel) {
 
 }
 
-class AsynchronousChannelGroup(val jChannelGroup: JAsynchronousChannelGroup) {}
+final case class AsynchronousChannelGroup private (val jChannelGroup: JAsynchronousChannelGroup) {}
 
 object AsynchronousChannelGroup {
-
-  def apply(): IO[Exception, AsynchronousChannelGroup] =
-    ??? // IO.syncException { throw new Exception() }
+  def apply(): IO[Exception, AsynchronousChannelGroup] = ???
 }
 
 class AsynchronousSocketChannel(private val channel: JAsynchronousSocketChannel)
@@ -95,18 +93,3 @@ object AsynchronousSocketChannel {
       .map(new AsynchronousSocketChannel(_))
 }
 
-/**
- * Only use casses.
- */
-object Program {
-
-  val program: IO[Exception, (Int, Int)] = for {
-    src          <- Buffer.byte(0)
-    sink         <- Buffer.byte(0)
-    channelGroup <- AsynchronousChannelGroup()
-    channel      <- AsynchronousSocketChannel(channelGroup)
-    nSrc         <- channel.write(src)
-    nSink        <- channel.read(sink)
-  } yield (nSrc, nSink)
-
-}
